@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContactsAccountType xmlns:android="http://schemas.android.com/apk/res/android"
+    inviteContactActionLabel="heyheyhey"
+    inviteContactActivity="com.example.android.myapplication.InviteContactActivity">
+
+    <ContactsDataKind
+        android:mimeType="vnd.android.cursor.item/vnd.example.myapplication.mimetype"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:summaryColumn="data2"
+        android:detailColumn="data3"
+        />
+</ContactsAccountType>
