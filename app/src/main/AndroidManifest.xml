@@ -11,7 +11,9 @@
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_SYNC" />
 
     <application
         android:allowBackup="true"
@@ -51,14 +53,19 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
             <meta-data
-                android:name="android.provider.CONTACT_STRUCTURE"
+                android:name="android.provider.CONTACTS_STRUCTURE"
                 android:resource="@xml/contacts" />
         </service>
 
-        <activity android:name=".InviteContactActivity">
+        <activity
+            android:name=".InviteContactActivity"
+            android:label="viewthis"
+            android:screenOrientation="portrait"
+            android:exported="true">
             <intent-filter>
-                <action android:name="com.android.contacts.action.INVITE_CONTACT" />
-                <data android:mimeType="vnd.android.cursor.item/contact" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.item/com.example.android.myapplication.account" />
             </intent-filter>
         </activity>
     </application>

@@ -40,19 +40,19 @@ public class MainActivity extends AppCompatActivity {
         // startActivityForResult(intent, REQUEST_CODE_FOR_ACCOUNT);
 
 
-        Account account = new Account("123@123", ACCOUNT_TYPE);
+        Account account = new Account("456@123", ACCOUNT_TYPE);
 
         AccountManager mAccountManager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
 
-        if (mAccountManager.addAccountExplicitly(account, PASSWORD, null)) {
+        if (mAccountManager.addAccountExplicitly(account, null, null)) {
             mAccountManager.setAuthToken(account, Constants.SUPER_AUTH_TOKEN_TYPE, "");
             ContentResolver.setIsSyncable(account, CONTENT_AUTHORITY, 1);
-            ContentResolver.setSyncAutomatically(account, CONTENT_AUTHORITY, true);
+            ContentResolver.setSyncAutomatically(account, ContactsContract.AUTHORITY, true);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(
-            new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS},
-            PERMISSIONS_REQUEST_READ_CONTACTS);
+                    new String[]{Manifest.permission.WRITE_CONTACTS, Manifest.permission.READ_CONTACTS},
+                    PERMISSIONS_REQUEST_READ_CONTACTS);
         }
         Bundle bundle = new Bundle();
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
@@ -66,11 +66,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public Uri addCallerIsSyncAdapterParameter(Uri uri, boolean isCallerSyncAdapter) {
-            if (isCallerSyncAdapter) {
-                uri.buildUpon().appendQueryParameter(ContactsContract.CALLER_IS_SYNCADAPTER, "true");
-            }
-            return uri;
+        if (isCallerSyncAdapter) {
+            uri.buildUpon().appendQueryParameter(ContactsContract.CALLER_IS_SYNCADAPTER, "true");
         }
+        return uri;
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -95,32 +95,4 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void addContact() {
-
-        ArrayList<ContentProviderOperation> ops = new ArrayList<>();
-        // insert account name and account type
-        ops.add(ContentProviderOperation
-                .newInsert(addCallerIsSyncAdapterParameter(ContactsContract.RawContacts.CONTENT_URI, true))
-                .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, ACCOUNT_NAME)
-                .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, ACCOUNT_TYPE)
-                .withValue(ContactsContract.RawContacts.AGGREGATION_MODE,
-                        ContactsContract.RawContacts.AGGREGATION_MODE_DEFAULT)
-                .build());
-
-        // insert contact number
-        ops.add(ContentProviderOperation
-                .newInsert(addCallerIsSyncAdapterParameter(ContactsContract.Data.CONTENT_URI, true))
-                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
-                .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
-                .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, 0123)
-                .build());
-
-        try {
-            getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (OperationApplicationException e) {
-            e.printStackTrace();
-        }
-    }
 }

@@ -90,7 +90,7 @@ public class SyncService extends Service {
 
             cursor.close();
 
-            addContact("123456789");
+            addContact("52930841678", "12348901928");
             /*
 
             if (cursor != null) {
@@ -108,7 +108,7 @@ public class SyncService extends Service {
             */
         }
 
-        private void addContact(String phoneNumber) {
+        private void addContact(String name, String phoneNumber) {
             ArrayList<ContentProviderOperation> ops = new ArrayList<>();
             // insert account name and account type
             ops.add(ContentProviderOperation
@@ -120,12 +120,14 @@ public class SyncService extends Service {
                     .build());
 
             // insert structured name
+            /*
             ops.add(ContentProviderOperation
                     .newInsert(addCallerIsSyncAdapterParameter(ContactsContract.Data.CONTENT_URI, true))
                     .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
                     .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
-                    .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, "MoneyFriendly")
+                    .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, name)
                     .build());
+            */
 
             // insert contact number
             ops.add(ContentProviderOperation
@@ -139,14 +141,15 @@ public class SyncService extends Service {
             ops.add(ContentProviderOperation
                     .newInsert(addCallerIsSyncAdapterParameter(ContactsContract.Data.CONTENT_URI, true))
                     .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
-                    .withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/vnd.example.myapplication.mimetype")
-                    .withValue(ContactsContract.Data.DATA1, phoneNumber)
-                    .withValue(ContactsContract.Data.DATA2, "user2345")
-                    .withValue(ContactsContract.Data.DATA3, "ContactsDemoAgain")
+                    .withValue(ContactsContract.Data.MIMETYPE, Constants.MIME_TYPE)
+                    .withValue(ContactsContract.Data.DATA1, 12345)
+                    .withValue(ContactsContract.Data.DATA2, "name")
+                    .withValue(ContactsContract.Data.DATA3, "another")
                     .build());
 
             try {
                 ContentProviderResult[] result = getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
+                Log.d("[test]", result.toString());
             } catch (RemoteException e) {
                 e.printStackTrace();
             } catch (OperationApplicationException e) {
